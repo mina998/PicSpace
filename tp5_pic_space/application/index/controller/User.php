@@ -7,7 +7,12 @@ use think\Session;
 class User extends Controller{
 
     public function login(){
+        
+        if (Session::get('name') == true) {
 
+            return $this->redirect('index/index');
+        }
+        
         if (request()->isPost()) {
             
             $pwd = '88888';
