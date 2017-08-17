@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>上传图片</title>
+    <!-- ZUI 标准版压缩后的 CSS 文件 -->
+    <link rel="stylesheet" href="//cdn.bootcss.com/zui/1.7.0/css/zui.min.css">
+    <link href="//cdn.bootcss.com/zui/1.7.0/lib/uploader/zui.uploader.min.css" rel="stylesheet">
+
+    <script src="//cdn.bootcss.com/zui/1.7.0/lib/jquery/jquery.js"></script>
+    <!-- ZUI Javascript 依赖 jQuery -->
+    <script src="//cdn.bootcss.com/zui/1.7.0/js/zui.min.js"></script>
+    <script src="//cdn.bootcss.com/zui/1.7.0/lib/uploader/zui.uploader.min.js"></script>
+
+</head>
+<body>
+{include file="common/header" /}
+<div class="container-fluid">
+    &nbsp;当前占用空间: <span class="text-success"> {$dirSize/1024/1024|number_format=###,2} </span>M 
+    &nbsp;空间总额: <span class="text-danger"> 4096 </span>M 
+    <hr>
+    <div class="uploader" data-ride="uploader">
+        <div class="uploader-message text-center" style="top:-30px">
+            <div class="content"></div>
+            <button type="button" class="close">×</button>
+        </div>
+        <div class="uploader-files file-list file-list-lg" style="min-height: 100px" data-drag-placeholder="请拖拽文件到此处"></div>
+        <div class="uploader-actions">
+            <div class="uploader-status pull-right text-muted"></div>
+            <button type="button" class="btn btn-link uploader-btn-browse"><i class="icon icon-plus"></i> 选择文件</button>
+            <button type="button" class="btn btn-link uploader-btn-start"><i class="icon icon-cloud-upload"></i> 开始上传</button>
+        </div>
+    </div>
+    <hr>
+    &nbsp;单张图片最大不能越过: <strong class="text-red"> 1.5 </strong>M ,请使用Chrome浏览器
+</div>
+</body>
+
+</html>
+
+<script>
+
+    var options = {
+        chunk_size:0,
+        url: '{:Url("index/up")}', // 文件上传提交地址
+        filters: {
+            // 只允许上传图片或图标（.ico）
+            mime_types: [
+                {title: '图片', extensions: 'jpg,gif,png'},
+                {title: '图标', extensions: 'ico'}
+            ],
+            // 最大上传文件为 1.5MB
+            max_file_size: '1536kb',
+            // 不允许上传重复文件
+            prevent_duplicates: true,
+        },
+        onFileUploaded: function(file, responseObject) {
+
+            if (responseObject.response) {
+
+
+                $data = responseObject.response.split('#')
+
+                var row = ' <div title="点击复制链接" data-placement="right" class="input-group copy" style="margin-top:8px;max-width:630px">\
+                                <input type="text" class="form-control" value="'+$data[0]+'">\
+                                <span onClick="copy(this)" class="input-group-addon" style="cursor:pointer">复制原图链接</span>\
+                            </div>';
+                $('div#file-'+$data[1]+ ' > .file-wrapper > .content').css('width','255').after(row)
+            }
+        },
+    }
+
+    $('.uploader').uploader(options);
+
+    function copy(note) {
+
+        $(note).prev('input').select();
+        document.execCommand("Copy"); // 执行浏览器复制命令
+        $(note).parent('.copy').tooltip('show', '已复制好，可贴粘。')
+    }
+</script>

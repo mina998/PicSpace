@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>最近上传</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/zui/1.7.0/css/zui.min.css">
+    <script src="//cdn.bootcss.com/zui/1.7.0/lib/jquery/jquery.js"></script>
+    <script src="//cdn.bootcss.com/zui/1.7.0/js/zui.min.js"></script>
+    {js href="https://cdn.bootcss.com/clipboard.js/1.7.1/clipboard.min.js" /}
+</head>
+<body>
+{include file="common/header" /}
+<div class="container-fluid">
+    <div class="cards">
+        {volist name="files" id="vo" empty="<div style='margin: 0 30px'>暂时没有数据</div>"}
+
+            <div class="card" style="float: left;margin: 10px">
+                <div class="card-heading">
+                    <span class="pull-left" style="margin-top: 2px">Size:{$vo.size}</span> 
+                    <!-- <span class="pull-right"><input type="checkbox"/></span> -->
+                </div>
+                <div class="card-content"><img id="{$vo.uid}" title="点击复制原图链接" src="{$vo.img}" style="height: 150px"></div>
+                <div class="card-actions">
+                    <div class="pull-left text-info"><i class="icon-resize"></i> <a href="{$vo.img}" target="_blank">查看原图</a></div>
+                    <!-- <div class="pull-right text-danger"><i class="icon-remove-circle"></i> <a href="{:Url('index/delfile')}?id={$vo.img}">删除</a></div> -->
+                </div>
+            </div>
+        {/volist}
+    </div>
+</div>
+
+<p id="submit" type="button" class="btn btn-sm btn-info" style="display: none;position: absolute;">删除所选</p>
+</body>
+</html>
+
+<script>
+
+    $('img').tooltip({
+        animation:true,
+
+    })
+
+    new Clipboard('img',{
+
+        text:function(e){
+
+            return e.currentSrc
+        }
+
+    }).on('success', function(e) { 
+
+        $id = e.trigger.getAttribute('id')
+
+        $('#'+$id).tooltip('show', '复制成功,可粘贴').next('.tooltip').addClass('tooltip-success')
+
+        $('#'+$id).mouseleave(function(){
+            
+            $(this).next('.tooltip').removeClass('tooltip-success')
+        })
+
+        e.clearSelection(); 
+    })
+    
+
+    $(':checkbox').click(function(){
+
+        $top = $(this).offset().top-35
+        $left= $(this).offset().left-42
+
+        $('#submit').show().css({'top':$top,'left':$left})
+
+        if($(':checkbox').is(':checked') == false){
+
+            $('#submit').hide()
+        }
+
+    })
+
+
+    $('#submit').click(function(){
+
+        if(window.confirm('删除后无法恢复!') == false){
+
+            return false
+        }
+
+        $(this).toggle();
+
+        $(':checkbox').each(function(i){
+
+            if($(this).is(':checked') == true){
+
+                $card = $(this).parents('.card')
+
+                $src  = $card.children('.card-content').children('img').attr('src')
+
+                $.ajax({
+                 
+                    async: false,
+                    type : "POST",
+                    url : "{:Url('index/delfile')}?id="+$src,
+                    success : function(data){
+
+                       if(data == 1){
+
+                            $card.remove()
+                        }
+                    }
+                })
+            }
+        })
+    })
+</script>
