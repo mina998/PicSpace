@@ -1,0 +1,55 @@
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <!-- 导航头部 -->
+        <div class="navbar-header">
+            <!-- 移动设备上的导航切换按钮 -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-example">
+                <span class="sr-only">切换导航</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <!-- 品牌名称或logo -->
+            <a class="navbar-brand"><i class="icon icon-camera"></i></a>
+        </div>
+        <!-- 导航项目 -->
+        <div class="collapse navbar-collapse navbar-collapse-example">
+            <!-- 一般导航项目 -->
+            <ul class="nav navbar-nav">
+                <li {eq name="$Request.action" value="index"} class="active"{/eq}><a href="{:Url('index/index')}">上传</a></li>
+
+                <li {eq name="$Request.action" value="views"} class="active"{/eq}>
+
+                    {if condition = "$Request.param.id eq false"}
+
+                        <a href="{:Url('index/views')}"><span class="text-danger">今天上传 </span> 的图片</a>
+
+                    {else/}
+
+                        <a href=""><span class="text-danger">{$Request.param.id|strtotime|date='Y-m-d',###} </span> 上传的图片</a>
+                        
+                    {/if}
+
+
+                </li>
+
+
+                <li {eq name="$Request.action" value="lists"} class="active"{/eq}><a href="{:Url('index/lists')}">图片目录</a></li>
+
+                <li id="delfile10" {eq name="$Request.action" value="del"} class="active"{/eq}><a href="{:Url('index/deldir')}">删除15天前上传的图片</a></li>
+
+            </ul>
+        </div>
+    </div>
+    <!-- END .navbar-collapse -->
+</nav>
+
+<script>
+    $('li#delfile10').click(function(){
+
+        if(window.confirm('删除后无法恢复!') == false){
+
+            return false
+        }
+    })
+</script>

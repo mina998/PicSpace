@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>图片目录</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/zui/1.7.0/css/zui.min.css">
+    <script src="//cdn.bootcss.com/zui/1.7.0/lib/jquery/jquery.js"></script>
+    <script src="//cdn.bootcss.com/zui/1.7.0/js/zui.min.js"></script>
+</head>
+<body>
+    {include file="common/header" /}
+    <div class="container-fluid">
+        <div class="cards">
+            {volist name="files" id="vo" empty="<div style='margin:0 30px'>暂时没有数据</div>"}
+            <div class="card col-md-2 col-sm-3 col-lg-1" style="margin: 10px;background: rgb(247,247,247)">
+                <div class="card-heading"><i class="icon-star"></i> <strong> {$vo.name}</strong></div>
+                <div class="card-content text-muted" style="padding-left: 15px">封面:暂无<br>图片数:{$vo.file} </div>
+                <div class="card-actions">
+                    <div class="pull-left text-green"><i class="icon-eye-open"></i> <a href="{:Url('index/views',['id'=>$vo.name])}">查看</a></div>
+                    <div class="pull-right text-danger"><i class="icon-ban-circle"></i> <a href="{:Url('index/deldir',['id'=>$vo.name])}">删除</a></div>
+                </div>
+            </div>
+            {/volist}
+        </div>
+    </div>
+</body>
+</html>
